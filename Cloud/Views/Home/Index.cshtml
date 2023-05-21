@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+@if (SignInManager.IsSignedIn(User))
+{
+    <form action="/api/files/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file-input" style="display: none;" />
+
+        <button type="button" onclick="document.getElementById('file-input').click();">
+            Добавить файл
+        </button>
+
+        <button type="submit">Загрузить</button>
+    </form>
+
+}
