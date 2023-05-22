@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Cloud.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Cloud.Controllers
 {
@@ -8,11 +9,15 @@ namespace Cloud.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
+        private string _pathFolder = Path.Combine(Directory.GetCurrentDirectory(), "UserFiles");
         private string SaveFile(IFormFile file)
         {
+            if (!Path.Exists(_pathFolder))
+            {
+                Directory.CreateDirectory(_pathFolder);
+            }
             string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-            string filePath = Path.Combine("C:\\Users\\79655\\Desktop\\Новая папка", uniqueFileName);
-
+            string filePath = Path.Combine(_pathFolder, uniqueFileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(stream);
@@ -24,27 +29,22 @@ namespace Cloud.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("No file uploaded");
-            }
+            string fileUrl = string.Empty;
             try
             {
-                using (var stream = System.IO.File.Create(Path.Combine("C:\\Users\\79655\\Desktop\\Новая папка", file.FileName)))
-                {
-                    await file.CopyToAsync(stream);
-                    
-                }
+                fileUrl = Url.Action("Download", "Files", new { fileName = SaveFile(file) }, Request.Scheme) ?? throw new Exception("Bad url");
             }
-            catch(Exception ex) { return BadRequest("Erorr"); }
-            string fileUrl = Url.Action("Download", "Files", new { fileName = SaveFile(file) }, Request.Scheme);
+            catch
+            {
+                return BadRequest();
+            }
             return Ok(fileUrl);
         }
 
         [HttpGet("download")]
         public IActionResult Download(string fileName)
         {
-            string filePath = Path.Combine("C:\\Users\\79655\\Desktop\\Новая папка", fileName);
+            string filePath = Path.Combine(_pathFolder, fileName);
 
             if (!System.IO.File.Exists(filePath))
             {
