@@ -1,7 +1,10 @@
 ﻿using Cloud.Data;
+using Cloud.Data.Tables;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using System.Security.Claims;
 
 namespace Cloud.Controllers
 {
@@ -9,6 +12,12 @@ namespace Cloud.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+
+        public FilesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         private string _pathFolder = Path.Combine(Directory.GetCurrentDirectory(), "UserFiles");
         private string SaveFile(IFormFile file)
         {
@@ -22,17 +31,20 @@ namespace Cloud.Controllers
             {
                 file.CopyTo(stream);
             }
-
             return uniqueFileName;
         }
-
+        [Authorize]
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
             string fileUrl = string.Empty;
             try
             {
-                fileUrl = Url.Action("Download", "Files", new { fileName = SaveFile(file) }, Request.Scheme) ?? throw new Exception("Bad url");
+                string fileName = SaveFile(file);
+                UserFile userFile = new UserFile {UserId=User.FindFirstValue(ClaimTypes.NameIdentifier),FilePath=fileName,Deleted=false,DeletedAfterDownload=false };
+                fileUrl = Url.Action("Download", "Files", new { fileName = fileName }, Request.Scheme) ?? throw new Exception("Bad url");
+                _context.Files.Add(userFile);
+                await _context.SaveChangesAsync();
             }
             catch
             {
@@ -53,13 +65,6 @@ namespace Cloud.Controllers
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/octet-stream", fileName);
-        }
-
-        // DELETE api/<UploadController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        
+        }        
     }
 }

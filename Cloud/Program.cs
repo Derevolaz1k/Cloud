@@ -42,7 +42,7 @@ namespace Cloud
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
-            //app.UseEndpoints(endpoints => endpoints.MapControllers());
+
             app.Run();
         }
     }

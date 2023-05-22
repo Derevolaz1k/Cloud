@@ -12,6 +12,6 @@ namespace Cloud.Data
         {
             Database.EnsureCreated();
         }
-        public DbSet<UserFiles> Files {get;set;}
+        public DbSet<UserFile> Files {get;set;}
     }
 }

@@ -10,6 +10,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <form action="/api/files/upload" method="post" enctype="multipart/form-data">
+        <h1>Ссылка для скачивания: </h1>
         <input type="file" name="file" id="file-input" style="display: none;" />
 
         <button type="button" onclick="document.getElementById('file-input').click();">
