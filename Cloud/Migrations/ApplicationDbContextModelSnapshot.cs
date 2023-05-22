@@ -20,6 +20,7 @@ namespace Cloud.Migrations
             modelBuilder.Entity("Cloud.Data.Tables.UserFile", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Deleted")
@@ -28,7 +29,7 @@ namespace Cloud.Migrations
                     b.Property<bool>("DeletedAfterDownload")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FilePath")
+                    b.Property<string>("Filename")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

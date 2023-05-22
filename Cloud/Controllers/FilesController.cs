@@ -41,7 +41,7 @@ namespace Cloud.Controllers
             try
             {
                 string fileName = SaveFile(file);
-                UserFile userFile = new UserFile {UserId=User.FindFirstValue(ClaimTypes.NameIdentifier),FilePath=fileName,Deleted=false,DeletedAfterDownload=false };
+                UserFile userFile = new UserFile {UserId=User.FindFirstValue(ClaimTypes.NameIdentifier),Filename=fileName,Deleted=false,DeletedAfterDownload=false };
                 fileUrl = Url.Action("Download", "Files", new { fileName = fileName }, Request.Scheme) ?? throw new Exception("Bad url");
                 _context.Files.Add(userFile);
                 await _context.SaveChangesAsync();
@@ -57,13 +57,18 @@ namespace Cloud.Controllers
         public IActionResult Download(string fileName)
         {
             string filePath = Path.Combine(_pathFolder, fileName);
-
             if (!System.IO.File.Exists(filePath))
             {
                 return NotFound();
             }
-
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            var file = _context.Files.Where(x=>x.Filename==fileName).FirstOrDefault();
+            if (file.DeletedAfterDownload)
+            {
+                System.IO.File.Delete(filePath);
+                _context.Entry(file).Property(x=>x.Deleted).CurrentValue=true;
+                _context.SaveChangesAsync();
+            }
             return File(fileBytes, "application/octet-stream", fileName);
         }        
     }

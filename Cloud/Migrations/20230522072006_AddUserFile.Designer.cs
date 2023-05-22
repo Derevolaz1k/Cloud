@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cloud.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230522062251_AddUserFile")]
+    [Migration("20230522072006_AddUserFile")]
     partial class AddUserFile
     {
         /// <inheritdoc />
@@ -23,6 +23,7 @@ namespace Cloud.Migrations
             modelBuilder.Entity("Cloud.Data.Tables.UserFile", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Deleted")
@@ -31,7 +32,7 @@ namespace Cloud.Migrations
                     b.Property<bool>("DeletedAfterDownload")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FilePath")
+                    b.Property<string>("Filename")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

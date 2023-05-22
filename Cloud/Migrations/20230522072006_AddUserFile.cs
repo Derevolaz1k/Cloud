@@ -54,8 +54,9 @@ namespace Cloud.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false),
-                    FilePath = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Filename = table.Column<string>(type: "TEXT", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     Deleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     DeletedAfterDownload = table.Column<bool>(type: "INTEGER", nullable: false)
