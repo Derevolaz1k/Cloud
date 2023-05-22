@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
+@model UploadModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -9,13 +10,23 @@
 </div>
 @if (SignInManager.IsSignedIn(User))
 {
-    <form action="/api/files/upload" method="post" enctype="multipart/form-data">
-        <h1>Ссылка для скачивания: </h1>
-        <input type="file" name="file" id="file-input" style="display: none;" />
-
-        <button type="button" onclick="document.getElementById('file-input').click();">
-            Добавить файл
-        </button>
-        <button type="submit">Загрузить</button>
-    </form>
 }
+<form action="/api/files/upload" method="post" enctype="multipart/form-data">
+    <div>
+        <label for="file">Выберите файл:</label>
+        <input type="file" name="file" id="file">
+    </div>
+    <div>
+        <label for="text">Текст:</label>
+        <input type="text" name="text" id="text">
+    </div>
+    <div>
+        <input type="checkbox" value="true" name="deletedAfterDownload" id="deletedAfterDownload">
+        <label for="deletedAfterDownload">Удалить после первого скачивания</label>
+    </div>
+    
+        <div>
+            <button type="submit">Отправить</button>
+        </div>
+
+</form>

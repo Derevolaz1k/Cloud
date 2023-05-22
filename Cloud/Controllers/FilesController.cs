@@ -1,19 +1,17 @@
 ﻿using Cloud.Data;
 using Cloud.Data.Tables;
+using Cloud.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Security.Claims;
 
 namespace Cloud.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController : ControllerBase
+    public class FilesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public FilesController(ApplicationDbContext context)
         {
             _context = context;
@@ -33,15 +31,16 @@ namespace Cloud.Controllers
             }
             return uniqueFileName;
         }
+
         [Authorize]
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload([FromForm]UploadModel model)
         {
             string fileUrl = string.Empty;
             try
             {
-                string fileName = SaveFile(file);
-                UserFile userFile = new UserFile {UserId=User.FindFirstValue(ClaimTypes.NameIdentifier),Filename=fileName,Deleted=false,DeletedAfterDownload=false };
+                string fileName = SaveFile(model.File);
+                UserFile userFile = new UserFile { UserId = User.FindFirstValue(ClaimTypes.NameIdentifier), Filename = fileName, Deleted = false, DeletedAfterDownload = model.DeletedAfterDownload };
                 fileUrl = Url.Action("Download", "Files", new { fileName = fileName }, Request.Scheme) ?? throw new Exception("Bad url");
                 _context.Files.Add(userFile);
                 await _context.SaveChangesAsync();
@@ -52,7 +51,6 @@ namespace Cloud.Controllers
             }
             return Ok(fileUrl);
         }
-
         [HttpGet("download")]
         public IActionResult Download(string fileName)
         {
