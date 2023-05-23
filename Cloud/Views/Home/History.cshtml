@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>My Files</title>
+</head>
+<body>
+    <h1>My Files</h1>
+    <ul id="fileList"></ul>
+    <script>
+        // Функция для получения списка файлов
+        function getFileList() {
+            fetch('/api/files/history')
+                .then(response => response.json())
+                .then(data => {
+                    const fileList = document.getElementById('fileList');
+                    fileList.innerHTML = '';
+                    data.forEach(fileName => {
+                        const li = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = '/api/files/download?fileName=' + fileName;
+                        link.innerText = fileName.substr(fileName.split('_')[0].length + 1);
+                        li.appendChild(link);
+
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.innerText = 'Delete';
+                        deleteBtn.addEventListener('click', () => {
+                            deleteFile(fileName);
+                        });
+                        li.appendChild(deleteBtn);
+
+                        fileList.appendChild(li);
+                    });
+                });
+        }
+
+        // Функция для удаления файла
+        function deleteFile(fileName) {
+            fetch('/api/files/delete?fileName=' + fileName, { method: 'DELETE' })
+                .then(() => {
+                    getFileList();
+                });
+        }
+
+        getFileList();
+    </script>
+</body>
+</html>

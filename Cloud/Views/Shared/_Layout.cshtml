@@ -7,6 +7,62 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Cloud.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #acacac;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #3f9fcb;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            color: #fff;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .navbar-nav .nav-item {
+            margin-right: 10px;
+        }
+
+            .navbar-nav .nav-item .nav-link {
+                color: #fff;
+                font-family: Arial, sans-serif;
+                font-size: 18px;
+            }
+
+                .navbar-nav .nav-item .nav-link:hover {
+                    color: #eee;
+                }
+
+        .footer {
+            padding: 10px;
+            margin-top: 50px;
+            background-color: #3f9fcb;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+        }
+
+            .footer a {
+                color: #fff;
+            }
+
+                .footer a:hover {
+                    color: #eee;
+                }
+
+        main {
+            background-color: #fff;
+            margin-top: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -25,6 +81,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Upload">Upload</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="History">History</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -39,7 +98,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Cloud - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - Cloud. All rights reserved.</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

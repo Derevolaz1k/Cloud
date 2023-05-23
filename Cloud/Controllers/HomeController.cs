@@ -21,6 +21,11 @@ namespace Cloud.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult History()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

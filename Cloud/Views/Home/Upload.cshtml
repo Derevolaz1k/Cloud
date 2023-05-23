@@ -1,23 +1,45 @@
-﻿@model Cloud.Models.UploadModel
+﻿@using Cloud.Controllers;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@model Cloud.Models.UploadModel
 @{
     ViewData["Title"] = "Upload Page";
 }
 @{
-    <form action="/api/files/upload" method="post" enctype="multipart/form-data">
-            <div>
-                <label for="file">Выберите файл:</label>
-                <input type="file" name="file" id="file">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <h1 class="text-center mb-4">Upload File</h1>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="alert alert-success text-center mb-4" role="alert">Successfully!</div>
+                    <form asp-controller="Files" asp-action="Upload" method="post" enctype="multipart/form-data">
+                        <div class="form-group mb-4">
+                            <label for="file" class="form-label">Select File</label>
+                            <div class="custom-file">
+                                <input asp-for="File" type="file" class="custom-file-input" id="file" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="text" class="form-label">Text</label>
+                            <input asp-for="Text" class="form-control" id="text" placeholder="Optional text" required>
+                        </div>
+                        <div class="form-check mb-4">
+                            <input asp-for="DeletedAfterDownload" type="checkbox" class="form-check-input" id="deleted-after-download" value="true">
+                            <label class="form-check-label" for="deleted-after-download">Delete file after download</label>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Upload</button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-info text-center mb-4" role="alert">To get started, you must authorize!</div>
+                }
             </div>
-            <div>
-                <label for="text">Текст:</label>
-                <input type="text" name="text" id="text">
-            </div>
-            <div>
-            <input type="checkbox" value="true" name="deletedAfterDownload" id="deletedAfterDownload">
-            <label for="deletedAfterDownload">Удалить после первого скачивания</label>
-            </div>
-            <div>
-                <button type="submit">Отправить</button>
-            </div>
-    </form>
+        </div>
+    </div>
 }

@@ -1,14 +1,34 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
-@model UploadModel
 @{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    p{
+       color: #000;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.2;
+  margin-top: 20px;
+  text-align: left;
+  display:table; 
+    }
+</style>
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>
+        Hello! My name is Eugene, this is my first ASP .NET project. Goal of the work:<br>
+        1) The ability to transfer a file to another user by uploading it to the "cloud storage".<br>
+        2) The function of self-deleting the file immediately after its first download should be provided so that it does not get to third parties.<br>
+        3) Implement text transfer.<br><br>
+
+        To get started, you need to log in, then go to the "Upload" tab, select the required file, you can write any message in the text field.
+        If you want to delete the content from the server immediately after downloading, then check the box.
+        After clicking on the "" button, you will see a link, clicking on it will start downloading the content.
+    </p>
 </div>
-@if (SignInManager.IsSignedIn(User))
+@*@if (SignInManager.IsSignedIn(User))
 {
 }
 <form action="/api/files/upload" method="post" enctype="multipart/form-data">
@@ -29,4 +49,4 @@
             <button type="submit">Отправить</button>
         </div>
 
-</form>
+</form>*@
