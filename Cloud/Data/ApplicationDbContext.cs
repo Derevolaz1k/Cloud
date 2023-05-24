@@ -13,6 +13,14 @@ namespace Cloud.Data
         {
             Database.EnsureCreated();
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if(!Directory.Exists("Data/Base"))
+            {
+                Directory.CreateDirectory("Data/Base");
+            }
+            optionsBuilder.UseSqlite("Data Source = Data/Base/Database.db");
+        }
         public DbSet<UserUploades> Uploads {get;set;}
     }
 }
