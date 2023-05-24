@@ -19,6 +19,11 @@ namespace Cloud.Controllers
             _context = context;
         }
         private string _pathFolder = Path.Combine(Directory.GetCurrentDirectory(), "UserFiles");
+        /// <summary>
+        /// Saving a file and assigning a unique name
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>Unique name</returns>
         private string SaveFile(IFormFile file)
         {
             if (!Path.Exists(_pathFolder))
@@ -33,6 +38,11 @@ namespace Cloud.Controllers
             }
             return uniqueFileName;
         }
+        /// <summary>
+        /// Creates a user upload object
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Redirect on view</returns>
         [Authorize]
         [HttpPost("upload")]
         public async Task<IActionResult> Upload([FromForm] UploadModel model)
@@ -60,13 +70,18 @@ namespace Cloud.Controllers
 
                 _context.Uploads.Add(userUpload);
                 await _context.SaveChangesAsync();
-                return Redirect($"/api/files/upload?pageId={userUpload.PageId}");//6ddf0485-c67a-473f-9a5f-8be3d4aef0b5
+                return Redirect($"/api/files/upload?pageId={userUpload.PageId}");
             }
             catch
             {
                 return BadRequest();
             }
         }
+        /// <summary>
+        /// Checking for the contents of the user upload object in the database.
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns>Showing the view.</returns>
         [HttpGet("upload")]
         public async Task<IActionResult> Upload(string pageId)
         {
@@ -87,7 +102,10 @@ namespace Cloud.Controllers
             }
             return NotFound();
         }
-
+        /// <summary>
+        /// All user uploads.
+        /// </summary>
+        /// <returns>Filenames, texts and id pages in format idPage_text(idPage_filename).</returns>
         [Authorize]
         [HttpGet("history")]
         public IEnumerable<string> History()
@@ -103,7 +121,11 @@ namespace Cloud.Controllers
                 .Select(x =>x.PageId+"_"+x.Text);//Display the text name in History
             return historyFiles.Take(historyFiles.Count()).Concat(historyText.Take(historyText.Count()));
         }
-
+        /// <summary>
+        /// Download file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         [HttpGet("download")]
         public async Task<IActionResult> Download(string fileName)
         {
@@ -127,6 +149,11 @@ namespace Cloud.Controllers
                 return NotFound("File not found:(");
             } 
         }
+        /// <summary>
+        /// Deleting a database entry and file
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string pageId)
         {
