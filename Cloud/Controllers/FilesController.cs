@@ -33,22 +33,6 @@ namespace Cloud.Controllers
             }
             return uniqueFileName;
         }
-        //private string SaveText(string text)//TODO in database
-        //{
-        //    if (!string.IsNullOrEmpty(text))
-        //    {
-        //        string uniqueFileName = Guid.NewGuid().ToString() + ".txt";
-        //        string filePath = Path.Combine(_pathFolder, uniqueFileName);
-        //        var file = System.IO.File.Create(filePath);
-        //        using (var sw = new StreamWriter(file))
-        //        {
-        //            sw.WriteLine(text);
-        //        }
-        //        return filePath;
-        //    }
-        //    return string.Empty;
-        //}
-
         [Authorize]
         [HttpPost("upload")]
         public async Task<IActionResult> Upload([FromForm] UploadModel model)
@@ -72,7 +56,7 @@ namespace Cloud.Controllers
                 {
                     userUpload.Text = model.Text;
                 }
-                userUpload.DeleteAfterDownload = model.DeletedAfterDownload; userUpload.PageId = Guid.NewGuid().ToString(); userUpload.FileUrl = fileUrl;
+                userUpload.DeleteAfterView = model.DeletedAfterDownload; userUpload.PageId = Guid.NewGuid().ToString(); userUpload.FileUrl = fileUrl;
 
                 _context.Uploads.Add(userUpload);
                 await _context.SaveChangesAsync();
@@ -86,17 +70,23 @@ namespace Cloud.Controllers
         [HttpGet("upload")]
         public async Task<IActionResult> Upload(string pageId)
         {
-            var model = await _context.Uploads.FirstOrDefaultAsync(x => x.PageId == pageId);
-            if (model != null)
+            var userUpload = await _context.Uploads.FirstOrDefaultAsync(x => x.PageId == pageId);
+            if (userUpload != null)
             {
-                return View(new DownloadModel {PageId=model.PageId,Text=model.Text,FileUrl=model.FileUrl });
+                if(userUpload.DeleteAfterView)
+                {
+                    if(userUpload.ViewsCounter>1)
+                    {
+                        await Delete(userUpload.PageId);
+                        return NotFound();
+                    }
+                }
+                userUpload.ViewsCounter++;
+                await _context.SaveChangesAsync();
+                return View(new DownloadModel {PageId=userUpload.PageId,Text=userUpload.Text,FileUrl=userUpload.FileUrl });
             }
             return NotFound();
         }
-
-        //[Authorize]
-        //[HttpGet("history")]
-        //public IEnumerable<string> History() => _context.Uploads.Where(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).Select(x => x.Filename);
 
         [Authorize]
         [HttpGet("history")]
@@ -115,7 +105,7 @@ namespace Cloud.Controllers
         }
 
         [HttpGet("download")]
-        public IActionResult Download(string fileName)
+        public async Task<IActionResult> Download(string fileName)
         {
             try
             {
@@ -125,18 +115,16 @@ namespace Cloud.Controllers
                     throw new Exception("File not found");
                 }
                 var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                var file = _context.Uploads.Where(x => x.Filename == fileName).FirstOrDefault();
-                if (file.DeleteAfterDownload)
+                var userUpload = _context.Uploads.Where(x => x.Filename == fileName).FirstOrDefault();
+                if (userUpload.DeleteAfterView)
                 {
-                    System.IO.File.Delete(filePath);
-                    _context.Remove(file);
-                    _context.SaveChangesAsync();
+                    await Delete(userUpload.PageId);
                 }
                 return File(fileBytes, "application/octet-stream", fileName);
             }
             catch(Exception ex) 
             {
-                return BadRequest(ex.Message);
+                return NotFound("File not found:(");
             } 
         }
         [HttpDelete("delete")]

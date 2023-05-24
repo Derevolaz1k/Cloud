@@ -12,7 +12,8 @@ namespace Cloud.Data.Tables
         public string? Filename { get; set; }
         public string? Text { get; set; }
         public string UserId { get; set; }
-        public bool DeleteAfterDownload { get; set; }//TODO create enum contitions(status)
+        public int ViewsCounter { get; set; }=0;
+        public bool DeleteAfterView { get; set; }//TODO create enum contitions(status)
         public string? FileUrl { get; set; }
         public DateTime UploadDate { get; set; } = DateTime.Now;
     }

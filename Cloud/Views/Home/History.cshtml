@@ -1,9 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@{
+    ViewData["Title"] = "History uploads";
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>My Urls</title>
 </head>
+@if (User.Identity.IsAuthenticated)
+{
 <body>
     <h1>My Urls</h1>
     <ul id="urlList"></ul>
@@ -19,11 +26,10 @@
                         const li = document.createElement('li');
                         const link = document.createElement('a');
                         link.innerText = link.innerText = displayName.substr(displayName.split('_')[0].length + 1);
-                        if(link.innerText.length>15)
-                        {
-                            link.innerText=link.innerText.substr(0,14);
+                        if (link.innerText.length > 15) {
+                            link.innerText = link.innerText.substr(0, 14);
                         }
-                        const pageId=displayName.split('_')[0];
+                        const pageId = displayName.split('_')[0];
                         link.href = '/api/files/upload?pageId=' + pageId;
                         li.appendChild(link);
                         //
@@ -50,4 +56,9 @@
         getUrlList();
     </script>
 </body>
+}
+else
+{
+<div class="alert alert-info text-center mb-4" role="alert">To get started, you must authorize!</div>
+}
 </html>
