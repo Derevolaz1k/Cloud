@@ -28,25 +28,4 @@
         After clicking on the "" button, you will see a link, clicking on it will start downloading the content.
     </p>
 </div>
-@*@if (SignInManager.IsSignedIn(User))
-{
-}
-<form action="/api/files/upload" method="post" enctype="multipart/form-data">
-    <div>
-        <label for="file">Выберите файл:</label>
-        <input type="file" name="file" id="file">
-    </div>
-    <div>
-        <label for="text">Текст:</label>
-        <input type="text" name="text" id="text">
-    </div>
-    <div>
-        <input type="checkbox" value="true" name="deletedAfterDownload" id="deletedAfterDownload">
-        <label for="deletedAfterDownload">Удалить после первого скачивания</label>
-    </div>
-    
-        <div>
-            <button type="submit">Отправить</button>
-        </div>
 
-</form>*@

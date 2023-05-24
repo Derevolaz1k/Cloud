@@ -1,4 +1,5 @@
 ﻿using Cloud.Data.Tables;
+using Cloud.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,6 @@ namespace Cloud.Data
         {
             Database.EnsureCreated();
         }
-        public DbSet<UserFile> Files {get;set;}
+        public DbSet<UserUploades> Uploads {get;set;}
     }
 }
