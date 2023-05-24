@@ -1,18 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
-@{
-    ViewData["Title"] = "History uploads";
-}
+
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <title>My Urls</title>
-</head>
+    <h1>My Urls</h1>
 @if (User.Identity.IsAuthenticated)
 {
 <body>
-    <h1>My Urls</h1>
     <ul id="urlList"></ul>
     <script>
         // Get list urls

@@ -1,7 +1,8 @@
 using Cloud.Data;
+using Cloud.Services.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Web;
 
 namespace Cloud
 {
@@ -19,7 +20,7 @@ namespace Cloud
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllers();
-            //builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
