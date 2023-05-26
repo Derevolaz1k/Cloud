@@ -154,6 +154,7 @@ namespace Cloud.Controllers
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(string pageId)
         {
